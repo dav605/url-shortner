@@ -69,8 +69,3 @@ Make sure you have **Python 3.8+** installed on your system.
 4. **Open in Browser:**
    Navigate to `http://127.0.0.1:5000` in your web browser.
 
----
-
-## 📝 License
-
-This project is open-source and available under the [MIT License](LICENSE).
