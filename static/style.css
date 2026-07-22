@@ -1,0 +1,556 @@
+/* ============================================================
+   style.css — URL Shortener Design System
+   ============================================================
+   Redesigned light-theme dashboard aesthetic inspired by modern
+   mint/teal, clean white cards, soft shadows, and warm accents.
+   ============================================================ */
+
+
+/* ── 1. CSS Custom Properties (Design Tokens) ──────────────── */
+:root {
+  /* Color Palette — Mint / Teal & Clean White with Coral Accents */
+  --clr-bg:           #b4ded9;    /* Soft pastel mint background */
+  --clr-bg-gradient:  linear-gradient(135deg, #aedcd7 0%, #c4e8e4 50%, #b0ded9 100%);
+  --clr-surface:      #ffffff;    /* Pristine white card surface */
+  --clr-surface-alt:  #f2f8f7;    /* Secondary surface / input fill */
+  --clr-surface-hover:#e8f3f1;    /* Input hover state */
+  --clr-border:       #d2e5e1;    /* Subtle soft border */
+  --clr-border-focus: #0d5c54;    /* Primary focus ring color */
+  
+  /* Primary & Accent Colors (matching reference image) */
+  --clr-primary:      #0d5c54;    /* Deep rich teal (buttons, active states) */
+  --clr-primary-hover:#0a4842;    /* Darker teal for button hover */
+  --clr-primary-light:#eaf5f3;    /* Light mint tint for result container */
+  --clr-primary-glow: rgba(13, 92, 84, 0.22);
+
+  --clr-accent-coral:#ff7052;    /* Warm energetic coral (badges, errors, accents) */
+  --clr-accent-yellow:#ffb703;   /* Warm yellow accent */
+
+  --clr-success:      #10b981;    /* Success green */
+  --clr-error:        #e04f44;    /* Error coral red */
+  --clr-error-bg:     #fdf2f0;    /* Light error surface */
+  --clr-error-border: #f8c8c4;    /* Light error border */
+
+  /* Text Colors */
+  --clr-text:         #133834;    /* Deep slate teal primary text */
+  --clr-text-muted:   #5b7d79;    /* Muted secondary text */
+  --clr-text-light:   #81a39f;    /* Light text / placeholders */
+
+  /* Typography */
+  --font-main: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Spacing & Shapes */
+  --radius-card:  1.5rem;         /* 24px smooth card corners */
+  --radius-input: 0.875rem;       /* 14px input corners */
+  --radius-btn:   0.875rem;       /* 14px button corners */
+  --radius-pill:  9999px;         /* Fully rounded pills */
+
+  /* Shadows */
+  --shadow-card:  0 20px 45px -10px rgba(12, 59, 54, 0.12), 0 4px 16px rgba(0, 0, 0, 0.03);
+  --shadow-btn:   0 8px 20px rgba(13, 92, 84, 0.25);
+  --shadow-btn-hover: 0 12px 28px rgba(13, 92, 84, 0.35);
+
+  /* Transitions */
+  --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* ── 2. Reset & Base ────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--clr-bg);
+  background-image: var(--clr-bg-gradient);
+  color: var(--clr-text);
+  min-height: 100vh;
+
+  /* Centre card vertically and horizontally */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow-x: hidden;
+  padding: 2.5rem 1.25rem;
+  position: relative;
+}
+
+/* Accessible screen-reader only class */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* ── 3. Ambient Background Decorative Blobs ─────────────────── */
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 0;
+  animation: float 14s ease-in-out infinite;
+}
+
+.blob-1 {
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, #8cd3cb, transparent 70%);
+  top: -180px;
+  left: -180px;
+  animation-delay: 0s;
+}
+
+.blob-2 {
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, #9fe0d8, transparent 70%);
+  bottom: -150px;
+  right: -150px;
+  animation-delay: -7s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50%       { transform: translateY(-25px) scale(1.04); }
+}
+
+
+/* ── 4. Main Card Container ─────────────────────────────────── */
+.card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 540px;
+
+  background: var(--clr-surface);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius-card);
+  padding: 2.75rem 2.5rem 2.25rem;
+
+  box-shadow: var(--shadow-card);
+
+  /* Entrance animation */
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+
+/* ── 5. Logo / Icon Branding ────────────────────────────────── */
+.logo {
+  width: 54px;
+  height: 54px;
+  border-radius: 1.1rem;
+  background: linear-gradient(135deg, var(--clr-primary), #0a4842);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-btn);
+  transition: transform var(--transition);
+}
+
+.logo:hover {
+  transform: scale(1.05) rotate(-3deg);
+}
+
+.logo svg {
+  width: 26px;
+  height: 26px;
+  color: #ffffff;
+}
+
+
+/* ── 6. Headings & Typography ───────────────────────────────── */
+h1 {
+  font-size: clamp(1.65rem, 4vw, 2.1rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  color: var(--clr-text);
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: var(--clr-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  font-weight: 400;
+  margin-bottom: 1.75rem;
+}
+
+.footer-note {
+  margin-top: 1.75rem;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--clr-text-muted);
+  opacity: 0.8;
+}
+
+
+/* ── 7. Form Layout & Inputs ────────────────────────────────── */
+.url-form {
+  width: 100%;
+}
+
+.input-group {
+  display: flex;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+
+.url-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.85rem 1.15rem;
+  font-family: var(--font-main);
+  font-size: 0.925rem;
+  font-weight: 500;
+  color: var(--clr-text);
+  background-color: var(--clr-surface-alt);
+  border: 1.5px solid var(--clr-border);
+  border-radius: var(--radius-input);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition), background-color var(--transition);
+}
+
+.url-input::placeholder {
+  color: var(--clr-text-light);
+}
+
+.url-input:hover {
+  background-color: var(--clr-surface-hover);
+  border-color: #bad8d3;
+}
+
+.url-input:focus {
+  background-color: #ffffff;
+  border-color: var(--clr-border-focus);
+  box-shadow: 0 0 0 4px var(--clr-primary-glow);
+}
+
+
+/* ── 7b. Custom Alias Row ───────────────────────────────────── */
+.alias-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.alias-prefix {
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--clr-text-muted);
+  white-space: nowrap;
+  padding: 0 0.15rem;
+  user-select: none;
+}
+
+.alias-input {
+  padding-top:    0.725rem;
+  padding-bottom: 0.725rem;
+  font-size: 0.875rem;
+}
+
+/* "Optional" Badge (Warm Coral Pill inspired by reference UI accent elements) */
+.alias-badge {
+  flex-shrink: 0;
+  font-size: 0.725rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--clr-accent-coral);
+  background: rgba(255, 112, 82, 0.12);
+  border: 1px solid rgba(255, 112, 82, 0.25);
+  border-radius: var(--radius-pill);
+  padding: 0.225rem 0.65rem;
+  white-space: nowrap;
+}
+
+.alias-hint {
+  margin-top: 0.4rem;
+  font-size: 0.775rem;
+  font-weight: 500;
+  color: var(--clr-text-muted);
+}
+
+
+/* ── 8. Shorten Button ──────────────────────────────────────── */
+.btn-shorten {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1.4rem;
+  font-family: var(--font-main);
+  font-size: 0.925rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: var(--clr-primary);
+  border: none;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: var(--shadow-btn);
+  transition: transform var(--transition), box-shadow var(--transition), background-color var(--transition);
+}
+
+.btn-shorten:hover {
+  background-color: var(--clr-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-btn-hover);
+}
+
+.btn-shorten:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-btn);
+}
+
+.btn-icon {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  transition: transform var(--transition);
+}
+
+.btn-shorten:hover .btn-icon {
+  transform: translateX(3px);
+}
+
+
+/* ── 9. Alert / Error Message ───────────────────────────────── */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-top: 1.25rem;
+  padding: 0.9rem 1.15rem;
+  border-radius: var(--radius-input);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  animation: fadeIn 0.3s ease both;
+}
+
+.alert-error {
+  background: var(--clr-error-bg);
+  border: 1.5px solid var(--clr-error-border);
+  color: var(--clr-error);
+}
+
+.alert svg {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+
+/* ── 10. Result Box ─────────────────────────────────────────── */
+.result-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding: 1.35rem 1.4rem;
+  background: var(--clr-primary-light);
+  border: 1.5px solid rgba(13, 92, 84, 0.18);
+  border-radius: var(--radius-input);
+  animation: fadeIn 0.35s ease both;
+}
+
+.result-label {
+  font-size: 0.775rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--clr-primary);
+}
+
+.short-link {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--clr-primary);
+  word-break: break-all;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.short-link:hover {
+  color: var(--clr-primary-hover);
+  text-decoration: underline;
+}
+
+/* Copy Button inside result box */
+.btn-copy {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.1rem;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--clr-primary);
+  background: #ffffff;
+  border: 1.5px solid rgba(13, 92, 84, 0.22);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(13, 92, 84, 0.08);
+  transition: background-color var(--transition), transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.btn-copy svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.btn-copy:hover {
+  background-color: var(--clr-primary);
+  color: #ffffff;
+  border-color: var(--clr-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(13, 92, 84, 0.2);
+}
+
+
+/* ── 11. Error 404 Page Styling ─────────────────────────────── */
+.error-card {
+  text-align: center;
+  padding: 3rem 2.5rem;
+}
+
+.error-icon {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: var(--clr-error-bg);
+  border: 1.5px solid var(--clr-error-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+}
+
+.error-icon svg {
+  width: 38px;
+  height: 38px;
+  color: var(--clr-accent-coral);
+}
+
+.badge-404 {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--clr-accent-coral);
+  background: rgba(255, 112, 82, 0.12);
+  border: 1.5px solid rgba(255, 112, 82, 0.28);
+  border-radius: var(--radius-pill);
+  padding: 0.25rem 0.85rem;
+  margin-bottom: 0.9rem;
+}
+
+.inline-code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.925em;
+  font-weight: 700;
+  background: var(--clr-primary-light);
+  color: var(--clr-primary);
+  border-radius: 0.35rem;
+  padding: 0.15em 0.5em;
+  border: 1px solid rgba(13, 92, 84, 0.2);
+}
+
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 1.75rem;
+  padding: 0.85rem 1.75rem;
+  font-family: var(--font-main);
+  font-size: 0.925rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: var(--clr-primary);
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  box-shadow: var(--shadow-btn);
+  transition: transform var(--transition), box-shadow var(--transition), background-color var(--transition);
+}
+
+.btn-home svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+.btn-home:hover {
+  background-color: var(--clr-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-btn-hover);
+}
+
+.btn-home:active {
+  transform: translateY(0);
+}
+
+
+/* ── 12. Responsive Breakpoints ─────────────────────────────── */
+@media (max-width: 520px) {
+  .card {
+    padding: 2rem 1.4rem 1.75rem;
+  }
+
+  .input-group {
+    flex-direction: column;
+  }
+
+  .btn-shorten {
+    width: 100%;
+    justify-content: center;
+    padding: 0.85rem 1rem;
+  }
+
+  .alias-row {
+    flex-wrap: wrap;
+  }
+
+  .alias-prefix {
+    width: 100%;
+    margin-bottom: -0.2rem;
+  }
+}
